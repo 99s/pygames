@@ -45,22 +45,22 @@ enemy_change_ratio_y = 10;
 background =  pgm.image.load("./imageresource/gamebg.jpg")
 
 # Bullet
-bulletImg = pgm.image.load("./imageresource/spaceship2.png")
+bulletImg = pgm.image.load("./imageresource/bullet32.png")
 bulletX = 0
 bulletY = 0
 bullet_max_X = 800
 bullet_max_Y = 600
 bullet_min_X = 0
 bullet_min_Y = 0
-bullet_change_ratio = 0.5;
-bullet_spawn = True
+bullet_change_ratio = 0.005;
+bullet_state = "ready"
 
 def player(x,y):
     screen.blit(playerImg,(x,y))
 def enemy(x,y):
     screen.blit(enemyImg,(x,y))
 def bullet(x,y):
-    screen.blit(bulletImg,(x,y))
+    screen.blit(bulletImg,(x+10,y+10))
 # Game Loop
 running = True;
 while running:
@@ -84,20 +84,19 @@ while running:
                 playerx_change += playerx_change_ratio;
             if ev.key == pgm.K_SPACE:
                 print("BULLET FIRED")
-                bullet_spawn = True
-                bullet(playerX,playerY)
+                bullet_state = "fire"
         if ev.type == pgm.KEYUP:
             if ev.key == pgm.K_LEFT or ev.key == pgm.K_RIGHT:
                 print("KeyStroke Released ")
                 playerx_change = 0;
 
-    # player coordinate change
+    # player Movement
     playerX += playerx_change
     if (playerX > player_max_X):
         playerX = player_max_X
     if (playerX < player_min_X):
         playerX = player_min_X
-    # Enemy coordinate change
+    # Enemy Movement
     enemyX += enemy_change_ratio_x
     #enemyY += enemy_change_ratio_y
 
@@ -114,9 +113,10 @@ while running:
         enemyY = enemy_max_Y
     if (enemyY < enemy_min_Y):
         enemyY = enemy_min_Y
-    # bullet fire
-    if bullet_spawn==True:
-        bulletY += bullet_change_ratio
+    # bullet Movement
+    if bullet_state == "fire":
+        bullet(playerX,playerY)
+        bulletY -= bullet_change_ratio
         print(str(bulletX) + '-Bx-By-'+ str(bulletY))
 
 
